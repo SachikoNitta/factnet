@@ -57,20 +57,20 @@ async def main():
         print("\\nDisplaying interactive visualization...")
         print("Close the plot window to continue...")
         
-        # Show interactive visualization
+        # Show interactive visualization with full text
         await visualizer.visualize(
-            figsize=(14, 10),
+            figsize=(16, 12),
             show_labels=True,
-            max_label_length=40
+            max_label_length=None  # None = show full text
         )
         
         # Save visualization to file
         print("Saving visualization to 'knowledge_graph.png'...")
         await visualizer.save_visualization(
             'knowledge_graph.png',
-            figsize=(16, 12),
+            figsize=(18, 14),
             show_labels=True,
-            max_label_length=35
+            max_label_length=None  # Full text in saved version too
         )
         
         print("Visualization saved successfully!")

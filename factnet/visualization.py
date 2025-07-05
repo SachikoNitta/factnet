@@ -18,7 +18,7 @@ class NetworkVisualizer:
         self.knowledge_graph = knowledge_graph
     
     async def visualize(self, figsize: tuple = (12, 8), show_labels: bool = True, 
-                       max_label_length: int = 30) -> None:
+                       max_label_length: int = None) -> None:
         G = nx.DiGraph()
         
         # Get all facts and relationships
@@ -27,7 +27,10 @@ class NetworkVisualizer:
         
         # Add nodes (facts)
         for fact in facts:
-            label = fact.content[:max_label_length] + "..." if len(fact.content) > max_label_length else fact.content
+            if max_label_length is not None and len(fact.content) > max_label_length:
+                label = fact.content[:max_label_length] + "..."
+            else:
+                label = fact.content
             G.add_node(fact.id, label=label)
         
         # Add edges (relationships)
@@ -48,15 +51,22 @@ class NetworkVisualizer:
                 edge_colors.append('gray')
                 edge_styles.append(':')
         
-        # Create layout
-        pos = nx.spring_layout(G, k=1, iterations=50)
+        # Create layout with more spacing for text
+        if max_label_length is None:
+            k = 3  # More spacing for full text
+            node_size = 3000  # Larger nodes for full text
+        else:
+            k = 1
+            node_size = 1500
+            
+        pos = nx.spring_layout(G, k=k, iterations=50)
         
         # Draw the graph
         plt.figure(figsize=figsize)
         
         # Draw nodes
         nx.draw_networkx_nodes(G, pos, node_color='lightblue', 
-                              node_size=1500, alpha=0.7)
+                              node_size=node_size, alpha=0.7)
         
         # Draw edges with different colors for different relationship types
         for i, edge in enumerate(G.edges()):
@@ -64,10 +74,30 @@ class NetworkVisualizer:
                                   style=edge_styles[i], width=2, alpha=0.7,
                                   arrowsize=20, arrowstyle='->')
         
-        # Draw labels
+        # Draw labels with text wrapping
         if show_labels:
             labels = nx.get_node_attributes(G, 'label')
-            nx.draw_networkx_labels(G, pos, labels, font_size=8, font_weight='bold')
+            
+            # Adjust font size based on label length
+            if max_label_length is None:
+                font_size = 6  # Smaller font for full text
+            else:
+                font_size = 8
+            
+            # Draw labels with better positioning for long text
+            for node, label in labels.items():
+                x, y = pos[node]
+                
+                # Wrap long text for better readability
+                if len(label) > 50:
+                    import textwrap
+                    wrapped_label = '\\n'.join(textwrap.wrap(label, width=40))
+                else:
+                    wrapped_label = label
+                
+                plt.text(x, y, wrapped_label, fontsize=font_size, fontweight='bold',
+                        ha='center', va='center', 
+                        bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
         
         # Add legend
         legend_elements = [

@@ -143,7 +143,10 @@ from factnet import NetworkVisualizer
 # Create visualizer
 visualizer = NetworkVisualizer(graph)
 
-# Show interactive plot
+# Show interactive plot with full text
+await visualizer.visualize(figsize=(16, 12), max_label_length=None)
+
+# Show plot with shortened text for readability
 await visualizer.visualize(figsize=(12, 8), max_label_length=30)
 
 # Save to file
@@ -157,6 +160,9 @@ await visualizer.save_visualization('my_graph.png')
 - **Interactive plots**: Zoom, pan, inspect nodes
 - **Export formats**: PNG, PDF, SVG, etc.
 
+![Knowledge Graph Visualization Example](examples/visualization_example.png)
+*Example visualization showing facts about artificial intelligence with AI-detected and manual relationships*
+
 ## Common Use Cases
 
 1. **News Fact Checking**: Store claims and automatically detect contradictions
@@ -166,7 +172,7 @@ await visualizer.save_visualization('my_graph.png')
 
 ## Examples
 
-The `examples/` directory contains four demonstration scripts:
+The `examples/` directory contains five demonstration scripts:
 
 ### 1. Basic Manual Relationships (`examples/example.py`)
 ```bash
@@ -203,6 +209,15 @@ python examples/example_visualization.py
 - **Prerequisites**: `pip install matplotlib networkx`
 - **Use for**: Debugging relationships, creating diagrams, network analysis
 
+### 5. Complete Workflow (`examples/example_complete.py`)
+```bash
+python examples/example_complete.py
+```
+- **Purpose**: Full end-to-end demonstration with all features
+- **Features**: Neo4j + OpenAI + Visualization in one complete workflow
+- **Prerequisites**: Neo4j running, OpenAI API key, `pip install matplotlib networkx`
+- **Use for**: Production testing, comprehensive demo, complete pipeline validation
+
 ## Architecture
 
 The library uses an async architecture where:
@@ -226,6 +241,7 @@ factnet/
 │   ├── example.py          # Basic manual relationships
 │   ├── example_neo4j.py    # Neo4j + OpenAI integration
 │   ├── example_simple.py   # In-memory + OpenAI testing
-│   └── example_visualization.py # Graph visualization demo
+│   ├── example_visualization.py # Graph visualization demo
+│   └── example_complete.py # Complete workflow: Neo4j + OpenAI + Visualization
 └── README.md              # This file
 ```

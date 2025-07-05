@@ -44,5 +44,6 @@ Thumbs.db
 
 # Generated files
 *.png
+!examples/visualization_example.png
 *.pdf
 *.svg
