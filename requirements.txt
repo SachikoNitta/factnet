@@ -1,0 +1,9 @@
+# Core dependencies
+neo4j>=5.0.0
+
+# Optional dependencies for visualization
+matplotlib>=3.5.0
+networkx>=2.8.0
+
+# Optional AI integrations
+openai>=1.0.0
